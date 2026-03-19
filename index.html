@@ -1,452 +1,85 @@
-+<!DOCTYPE html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>天天开心</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 全局样式 */
-        * {
+        /* 设置body和html全屏 */
+        html, body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #000;
+            height: 100%;
+            width: 100%;
             overflow: hidden;
-            margin: 0;
-            min-height: 100vh;
-            position: relative;
-            cursor: default;
         }
 
-        /* 代码容器样式 */
-        .code-container {
-            position: fixed;
+        /* 背景 */
+        .video-background {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            font-family: 'SimHei', 'Microsoft YaHei', sans-serif;
-            z-index: 1;
+            height: 100%;
+            object-fit: cover; /* 保持比例并覆盖整个容器 */
+            z-index: -1; /* 确保在最底层 */
         }
 
-        /* 代码行动画 */
-        .code-line {
+        /* 内容样式 */
+        .content {
             position: absolute;
-            white-space: nowrap;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(100vh); }
-        }
-
-        /* 三种粉色样式 */
-        .pink-1 {
-            color: #ff99cc;
-            text-shadow: 0 0 3px #ffb3d9;
-        }
-        
-        .pink-2 {
-            color: #ff66b3;
-            text-shadow: 0 0 3px #ff80cc;
-        }
-        
-        .pink-3 {
-            color: #ff3399;
-            text-shadow: 0 0 3px #ff66b3;
-        }
-
-        /* 主标题容器 - 圆形磨砂框 */
-        .main-title-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 65%;
+            left: 42%;
             transform: translate(-50%, -50%);
+            color: rgb(238, 230, 235);
+            font-size: 1.1rem;
+            font-family: 楷体;
+            animation: pulse 1.5s infinite;
             text-align: center;
-            z-index: 999;
-            padding: 60px 50px;
-            background-color: rgba(9, 8, 8, 0.5);
-            border-radius: 50%;
-            backdrop-filter: blur(5px);
-            min-width: 300px;
-            max-width: 90vw;
+            z-index: 1; /* 确保内容显示在之上 */
         }
-
-        /* 主标题样式 */
-        .main-title {
-            font-size: clamp(1.5rem, 10vw, 2.5rem);
-            color: #fff;
-            font-family: 'Noto Sans SC', sans-serif;
-            font-weight: 700;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px #ff66b3;
-        }
-
-        /* 副标题样式 */
-        .sub-title {
-            font-size: clamp(0.8rem, 4vw, 1.5rem);
-            color: #f0f0f0;
-            font-family: 'Noto Sans SC', sans-serif;
-            font-weight: 500;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        /* 下一页按钮样式 */
-        .next-btn {
-            background-color: #ff66b3;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: clamp(1rem, 3vw, 1.3rem);
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Noto Sans SC', sans-serif;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(255, 102, 179, 0.4);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .next-btn:hover {
-            background-color: #ff3399;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 102, 179, 0.6);
-        }
-
-        .next-btn i {
-            transition: transform 0.3s ease;
-        }
-
-        .next-btn:hover i {
-            transform: translateX(5px);
-        }
-
-        /* 鼠标跟随爱心样式 */
-        .heart {
-            position: absolute;
-            pointer-events: none;
-            z-index: 500;
-            animation: float 1.5s ease-in-out forwards;
-        }
-
-        /* 爱心形状 */
-        .heart:before,
-        .heart:after {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 10px;
-            height: 16px;
-            border-radius: 50px 50px 0 0;
-            background: currentColor;
-        }
-
-        .heart:before {
-            left: 10px;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
-        }
-
-        .heart:after {
-            left: 0;
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
-        }
-
-        /* 爱心浮动动画 */
-        @keyframes float {
+         @keyframes pulse {
             0% {
-                opacity: 1;
-                transform: translate(0, 0) rotate(0deg) scale(1);
+                transform: scale(1);
+                color: #f0284d;
+            }
+            50% {
+                transform: scale(1.3);
+                color: #46d3f0;
             }
             100% {
-                opacity: 0;
-                transform: translate(0, -50px) rotate(30deg) scale(0.3);
-            }
-        }
-
-        /* 音乐控制按钮 */
-        .music-control {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: rgba(255, 102, 179, 0.8);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            box-shadow: 0 2px 10px rgba(255, 102, 179, 0.5);
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-
-        .music-control:hover {
-            background-color: #ff3399;
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .main-title-container {
-                padding: 40px 30px;
-                min-width: auto;
-                width: 85vw;
-                height: 85vw;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-            
-            .main-title {
-                font-size: clamp(1rem, 9vw, 2rem);
-                margin-bottom: 10px;
-            }
-            
-            .sub-title {
-                font-size: clamp(1.1rem, 3.5vw, 1.6rem);
-                margin-bottom: 20px;
-            }
-            
-            .next-btn {
-                padding: 10px 25px;
-                margin: 0 auto;
-            }
-            
-            .music-control {
-                width: 40px;
-                height: 40px;
-                top: 15px;
-                left: 15px;
+                transform: scale(1);
+                color: #ed385a;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 音乐控制按钮 -->
-    <button class="music-control" id="musicControl">
-        <i class="fas fa-pause" id="musicIcon"></i>
-    </button>
-    
-    <!-- 主标题容器 -->
-    <div class="main-title-container">
-        <h1 class="main-title">菲菲
-        </h1>
-        <p class="sub-title">我想你一直陪在我身边<br>永不走散</p>
-        <button class="next-btn" id="nextBtn">
-            点击有惊喜 <i class="fas fa-arrow-right"></i>
-        </button>
+
+    <!-- 背景 -->
+    <video class="video-background" autoplay muted loop>
+        <source src="love.mp4" type="video/mp4">
+        
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- 页面内容 -->
+    <div class="content"> 
+       <!--  <h1>果果<br>永远开心哦<h1> -->
     </div>
-    
-    <!-- 音频元素 -->
-    <audio id="bgMusic" loop muted>
-        <!-- 请将下面的音频URL替换为"第57次取消发送"的实际音频文件地址 -->
-        <source src="http://music.163.com/song/media/outer/url?id=1966879563.mp3" type="audio/mpeg">
-     您的浏览器不支持音频播放
-    </audio>
-    
-    <div class="code-container" id="code-container"></div>
 
-    <script>
-        // 爱情相关的关键词
-        const keywords = [
-            '新年', '喜欢', '节日快乐', '2026', '思念', 
-            '跨年', '相伴', '永远', '珍惜', '温暖',
-            '幸福', '甜蜜', '温柔', '守护', '唯一',
-            '心意', '永恒', '约定', '浪漫', '真情'
-        ];
-        
-        // 三种粉色样式类名
-        const pinkClasses = ['pink-1', 'pink-2', 'pink-3'];
-        // 爱心颜色
-        const heartColors = ['#ff99cc', '#ff66b3', '#ff3399', '#ffb3d9', '#ff80cc'];
-        
-        const container = document.getElementById('code-container');
-        const bgMusic = document.getElementById('bgMusic');
-        const nextBtn = document.getElementById('nextBtn');
-        const musicControl = document.getElementById('musicControl');
-        const musicIcon = document.getElementById('musicIcon');
-        let lineCount = 0;
-        const maxLines = 200; // 代码雨密度
-        let isPlaying = false;
+</script>
+<audio id="music1" loop preload="auto" controls hidden>
+    <source src="http://music.163.com/song/media/outer/url?id=1966879563.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
-        // 尝试自动播放音乐（浏览器兼容方案）
-        function tryAutoPlay() {
-            bgMusic.play().then(() => {
-                // 播放成功后取消静音
-                bgMusic.muted = false;
-                isPlaying = true;
-                musicIcon.classList.remove('fa-play');
-                musicIcon.classList.add('fa-pause');
-            }).catch(error => {
-                console.log('自动播放失败，等待用户交互:', error);
-                // 保持静音状态，但继续尝试在用户交互后播放
-                isPlaying = false;
-                musicIcon.classList.remove('fa-pause');
-                musicIcon.classList.add('fa-play');
-            });
-        }
+  <script>
+    document.body.addEventListener('click', function() {
+      var myAudio = document.getElementById('music1');
+      myAudio.play();
+    });
+  </script>
 
-        // 音乐控制按钮事件
-        musicControl.addEventListener('click', toggleMusic);
-        
-        // 下一页按钮点击事件
-        nextBtn.addEventListener('click', function() {
-            // 如果音乐未播放，尝试播放
-            if (!isPlaying) {
-                toggleMusic();
-            }
-            
-            // 跳转到下一页，这里使用#作为占位符，可替换为实际页面URL
-           window.location.href = "粒子爱心/index.html";
-        });
-
-        // 切换音乐播放状态
-        function toggleMusic() {
-            if (isPlaying) {
-                bgMusic.pause();
-                musicIcon.classList.remove('fa-pause');
-                musicIcon.classList.add('fa-play');
-            } else {
-                bgMusic.play().then(() => {
-                    bgMusic.muted = false;
-                    musicIcon.classList.remove('fa-play');
-                    musicIcon.classList.add('fa-pause');
-                }).catch(error => {
-                    console.log('播放失败:', error);
-                    alert('请允许音频播放以获得更好的体验');
-                });
-            }
-            isPlaying = !isPlaying;
-        }
-
-        // 创建代码雨
-        function createCodeLine() {
-            // 控制最大行数
-            if (lineCount >= maxLines) {
-                const oldestLine = container.querySelector('.code-line');
-                if (oldestLine) {
-                    oldestLine.remove();
-                    lineCount--;
-                }
-            }
-
-            const line = document.createElement('div');
-            line.className = 'code-line';
-            
-            // 随机选择一种粉色
-            const randomPink = pinkClasses[Math.floor(Math.random() * pinkClasses.length)];
-            line.classList.add(randomPink);
-            
-            // 水平位置随机分布
-            line.style.left = `${Math.random() * 100}%`;
-            
-            // 垂直起始位置随机
-            const startY = Math.random() * -100;
-            line.style.top = `${startY}%`;
-            
-            // 动画持续时间
-            const duration = Math.random() * 8 + 5; // 5-13秒
-            line.style.animationDuration = `${duration}s`;
-            
-            // 随机字体大小
-            const fontSize = Math.random() * 8 + 14; // 14-22px
-            line.style.fontSize = `${fontSize}px`;
-            
-            // 生成代码行内容
-            let code = '';
-            const length = Math.floor(Math.random() * 3) + 2; // 每行2-4个元素
-            
-            for(let i = 0; i < length; i++) {
-                const keyword = keywords[Math.floor(Math.random() * keywords.length)];
-                code += keyword + (Math.random() > 0.7 ? ' ' : '');
-            }
-            
-            // 代码雨透明度
-            line.style.opacity = Math.random() * 0.3 + 0.4;
-            
-            line.textContent = code;
-            container.appendChild(line);
-            lineCount++;
-            
-            // 动画结束后移除
-            setTimeout(() => {
-                if (line.parentNode === container) {
-                    line.remove();
-                    lineCount--;
-                }
-            }, duration * 1000);
-        }
-
-        // 创建跟随鼠标的爱心
-        function createHeart(x, y) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            
-            // 随机选择爱心颜色
-            const color = heartColors[Math.floor(Math.random() * heartColors.length)];
-            heart.style.color = color;
-            
-            // 随机大小
-            const size = Math.random() * 10 + 10; // 10-20px
-            heart.style.width = `${size}px`;
-            heart.style.height = `${size}px`;
-            
-            // 位置设置为鼠标坐标
-            heart.style.left = `${x}px`;
-            heart.style.top = `${y}px`;
-            
-            document.body.appendChild(heart);
-            
-            // 动画结束后移除爱心
-            setTimeout(() => {
-                heart.remove();
-            }, 1500);
-        }
-
-        // 监听鼠标移动事件
-        document.addEventListener('mousemove', function(e) {
-            // 控制爱心生成频率
-            if (Math.random() > 0.7) {
-                createHeart(e.clientX, e.clientY);
-            }
-        });
-
-        // 监听页面交互，一旦有用户操作就尝试播放音乐
-        document.addEventListener('click', function firstInteraction() {
-            if (!isPlaying) {
-                tryAutoPlay();
-            }
-            document.removeEventListener('click', firstInteraction);
-        }, { once: true });
-
-        // 页面加载完成后尝试自动播放
-        window.addEventListener('load', tryAutoPlay);
-
-        // 代码雨生成频率
-        const interval = 40;
-        
-        // 初始生成代码雨
-        for(let i = 0; i < 80; i++) {
-            createCodeLine();
-        }
-        
-        // 持续生成代码雨
-        setInterval(createCodeLine, interval);
-    </script>
 </body>
 </html>
-    
